@@ -7,10 +7,13 @@ MainComponent::MainComponent()
     , durationSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , panSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , readposSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+    , velocitySlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+
     , intervalRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , durationRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , panRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , readposRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+    , velocityRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -39,7 +42,7 @@ MainComponent::MainComponent()
     // Sliders
     ////////////////////
     addAndMakeVisible(intervalSlider);
-    intervalSlider.setRange(0.1, 2000);
+    intervalSlider.setRange(0.1, 5000);
     intervalSlider.setSkewFactorFromMidPoint(1);
     intervalSlider.onValueChange = [this] {
         puroEngine.intervalParam.centre = (float)intervalSlider.getValue();
@@ -47,7 +50,7 @@ MainComponent::MainComponent()
     intervalSlider.setValue(1.0);
 
     addAndMakeVisible(durationSlider);
-    durationSlider.setRange(1, 1000);
+    durationSlider.setRange(1, 4000);
     durationSlider.onValueChange = [this] {
         puroEngine.durationParam.centre = (float)(durationSlider.getValue() / 1000.0f * this->getSampleRate());
     };
@@ -66,6 +69,13 @@ MainComponent::MainComponent()
         puroEngine.readposParam.centre = (float)(readposSlider.getValue() * this->getSampleRate());
     };
     readposSlider.setValue(0);
+
+    addAndMakeVisible(velocitySlider);
+    velocitySlider.setRange(0.25, 4);
+    velocitySlider.onValueChange = [this] {
+        puroEngine.velocityParam.centre = (float)(velocitySlider.getValue());
+    };
+    velocitySlider.setValue(1);
 
     // Randomness
 
@@ -96,6 +106,15 @@ MainComponent::MainComponent()
         puroEngine.readposParam.deviation = (float)(readposRandSlider.getValue() * this->getSampleRate());
     };
     readposRandSlider.setValue(0);
+
+    addAndMakeVisible(velocityRandSlider);
+    velocityRandSlider.setRange(0, 1);
+    velocityRandSlider.setSkewFactorFromMidPoint(0.1);
+    velocityRandSlider.onValueChange = [this] {
+        puroEngine.velocityParam.deviation = (float)velocityRandSlider.getValue();
+    };
+    velocityRandSlider.setValue(0.0);
+
 }
 
 MainComponent::~MainComponent()
@@ -141,11 +160,13 @@ void MainComponent::resized()
     durationSlider.setBounds(110, 50, 100, 100);
     panSlider.setBounds(210, 50, 100, 100);
     readposSlider.setBounds(310, 50, 100, 100);
+    velocitySlider.setBounds(410, 50, 100, 100);
 
     intervalRandSlider.setBounds(10, 150, 100, 100);
     durationRandSlider.setBounds(110, 150, 100, 100);
     panRandSlider.setBounds(210, 150, 100, 100);
     readposRandSlider.setBounds(310, 150, 100, 100);
+    velocityRandSlider.setBounds(410, 150, 100, 100);
 
     activeGrainsLabel.setBounds(10, getHeight()-40, 100, 30);
 }

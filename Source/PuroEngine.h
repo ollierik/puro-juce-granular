@@ -10,16 +10,25 @@
 
 struct Grain
 {
-    Grain(int offset, int length, int startIndex, float panning)
-        : alignment(offset, length)
-        , audioSequence((float)startIndex, 1.0f)
-        , envelopeSequence(puro::content_envelope_halfcos_create_seq<float>(length))
+    Grain(int offset, int length, int startIndex, float panning, double velocity, int sourceLength)
+        : alignment({ offset, length })
+        , readInc(velocity)
+        , readPos(startIndex)
+        , envelopeInc(puro::envelope_hann_get_increment<float>(length))
+        , envelopePos(envelopeInc)
         , panCoeffs(puro::pan_create_stereo(panning))
-    {}
+    {
+        std::tie(alignment, readPos) = puro::interp3_avoid_out_of_bounds_reads(alignment, readPos, readInc, sourceLength);
+    }
 
     puro::RelativeAlignment alignment;
-    puro::Sequence<float> audioSequence;
-    puro::Sequence<float> envelopeSequence;
+
+    const double readInc;
+    double readPos;
+
+    const float envelopeInc;
+    float envelopePos;
+
     puro::PanCoeffs<float, 2> panCoeffs;
 };
 
@@ -41,13 +50,12 @@ bool process_grain(BufferType dst, ElementType& grain, ContextType& context, Sou
         return true;
 
     auto audio = puro::buffer_wrap_vector<SourceBufferType> (context.vec1, dst.length());
-    audio = puro::content_interpolation_crop_buffer(audio, source.length(), grain.audioSequence, 1);
-    std::tie(audio, grain.audioSequence) = puro::content_interpolation1_fill(audio, source, grain.audioSequence);
+    grain.readPos = puro::interp3_fill(audio, source, grain.readPos, grain.readInc);
 
     MonoBufferType envelope = puro::buffer_wrap_vector<MonoBufferType> (context.vec2, audio.length());
-    grain.envelopeSequence = puro::content_envelope_halfcos_fill(envelope, grain.envelopeSequence);
+    grain.envelopePos = puro::envelope_halfcos_fill(envelope, grain.envelopePos, grain.envelopeInc);
 
-    puro::content_multiply_inplace(audio, envelope);
+    puro::buffer_multiply(audio, envelope);
 
     BufferType output = puro::buffer_trim_length(dst, audio.length());
 
@@ -62,10 +70,11 @@ public:
 
     PuroEngine()
         : timer(0)
-        , intervalParam(1.0f, 0.0f, 0.1f, 2000.0f)
+        , intervalParam(1.0f, 0.0f, 0.1f, 5000.0f)
         , durationParam(100.0f, 100.0f, 0, 44100*10)
         , panningParam(0.0f, 0.0f, -1.0f, 1.0f)
         , readposParam(44100.0f, 0.0f, 0, 88200)
+        , velocityParam(1.0f, 0.0f, 0.25f, 4.0f)
     {
         pool.elements.reserve(4096);
     }
@@ -123,8 +132,9 @@ public:
             const int duration = durationParam.get();
             const float panning = panningParam.get();
             const int readpos = readposParam.get();
+            const float velocity = velocityParam.get();
 
-            auto it = pool.push(Grain(blockSize - n, duration, readpos, panning));
+            auto it = pool.push(Grain(blockSize - n, duration, readpos, panning, velocity, sourceBuffer.length()));
 
             if (it.isValid())
             {
@@ -138,6 +148,7 @@ public:
     puro::Parameter<int, false> durationParam;
     puro::Parameter<float, false> panningParam;
     puro::Parameter<int, false> readposParam;
+    puro::Parameter<float, true> velocityParam;
 
     Context context;
     puro::Timer<int> timer;
