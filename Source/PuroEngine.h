@@ -14,11 +14,11 @@ struct Grain
         : alignment({ offset, length })
         , readInc(velocity)
         , readPos(startIndex)
-        , envelopeInc(puro::envelope_hann_get_increment<float>(length))
+        , envelopeInc(puro::envelope_halfcos_get_increment<float>(length))
         , envelopePos(envelopeInc)
         , panCoeffs(puro::pan_create_stereo(panning))
     {
-        std::tie(alignment, readPos) = puro::interp3_avoid_out_of_bounds_reads(alignment, readPos, readInc, sourceLength);
+        std::tie(alignment, readPos) = puro::interp_avoid_out_of_bounds_reads<3>(alignment, readPos, readInc, sourceLength);
     }
 
     puro::RelativeAlignment alignment;

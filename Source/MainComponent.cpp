@@ -46,6 +46,8 @@ MainComponent::MainComponent()
     intervalSlider.setSkewFactorFromMidPoint(1);
     intervalSlider.onValueChange = [this] {
         puroEngine.intervalParam.centre = (float)intervalSlider.getValue();
+        const float interval = puroEngine.intervalParam.get();
+        puroEngine.timer.interval = math::round(puroEngine.durationParam.centre / interval);
     };
     intervalSlider.setValue(1.0);
 

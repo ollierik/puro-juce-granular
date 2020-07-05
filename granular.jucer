@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="zZ8mjR" name="granular" projectType="guiapp" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" headerPath="../../../puro/src/">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" headerPath="../../../puro/src/"
+              cppLanguageStandard="17">
   <MAINGROUP id="uHNplo" name="granular">
     <GROUP id="{766CF418-9CA3-AE6C-0F61-0106B299019F}" name="Source">
       <FILE id="pjsXGr" name="PuroEngine.h" compile="0" resource="0" file="Source/PuroEngine.h"/>
@@ -11,17 +12,19 @@
             file="Source/MainComponent.cpp"/>
     </GROUP>
     <GROUP id="{0128DD39-4DEA-661F-00E1-384C5E1E2A52}" name="puro">
-      <FILE id="NEvSJq" name="buffers.hpp" compile="0" resource="0" file="../puro/src/buffers.hpp"/>
-      <FILE id="S600At" name="defs.hpp" compile="0" resource="0" file="../puro/src/defs.hpp"/>
-      <FILE id="q3Bup4" name="engine.hpp" compile="0" resource="0" file="../puro/src/engine.hpp"/>
-      <FILE id="otRi6b" name="math.hpp" compile="0" resource="0" file="../puro/src/math.hpp"/>
-      <FILE id="ISwmXs" name="node_stacks.hpp" compile="0" resource="0" file="../puro/src/node_stacks.hpp"/>
-      <FILE id="jdWsa6" name="operations.hpp" compile="0" resource="0" file="../puro/src/operations.hpp"/>
-      <FILE id="nFnZUM" name="panning.hpp" compile="0" resource="0" file="../puro/src/panning.hpp"/>
-      <FILE id="LmQziR" name="pools.hpp" compile="0" resource="0" file="../puro/src/pools.hpp"/>
-      <FILE id="wfkfMD" name="puro.hpp" compile="0" resource="0" file="../puro/src/puro.hpp"/>
-      <FILE id="KWPSLi" name="sequences.hpp" compile="0" resource="0" file="../puro/src/sequences.hpp"/>
-      <FILE id="MH5Aeh" name="utils.hpp" compile="0" resource="0" file="../puro/src/utils.hpp"/>
+      <FILE id="JYR1gl" name="alignment.hpp" compile="0" resource="0" file="../puro/src/alignment.hpp"/>
+      <FILE id="N2aqcp" name="buffer.hpp" compile="0" resource="0" file="../puro/src/buffer.hpp"/>
+      <FILE id="KU6Uh4" name="defs.hpp" compile="0" resource="0" file="../puro/src/defs.hpp"/>
+      <FILE id="IG4m7r" name="envelope.hpp" compile="0" resource="0" file="../puro/src/envelope.hpp"/>
+      <FILE id="AlFBOQ" name="interpolation.hpp" compile="0" resource="0"
+            file="../puro/src/interpolation.hpp"/>
+      <FILE id="XiiYOd" name="math.hpp" compile="0" resource="0" file="../puro/src/math.hpp"/>
+      <FILE id="rNIfeU" name="node_stacks.hpp" compile="0" resource="0" file="../puro/src/node_stacks.hpp"/>
+      <FILE id="uUhPaB" name="panning.hpp" compile="0" resource="0" file="../puro/src/panning.hpp"/>
+      <FILE id="H37kJI" name="pool.hpp" compile="0" resource="0" file="../puro/src/pool.hpp"/>
+      <FILE id="XhQunD" name="puro.hpp" compile="0" resource="0" file="../puro/src/puro.hpp"/>
+      <FILE id="NrCmzg" name="signal.hpp" compile="0" resource="0" file="../puro/src/signal.hpp"/>
+      <FILE id="mdEIzF" name="utility.hpp" compile="0" resource="0" file="../puro/src/utility.hpp"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
