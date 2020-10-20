@@ -5,13 +5,13 @@ MainComponent::MainComponent()
     : audioFileDialogButton("Load audio file")
     , intervalSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , durationSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
-    , panSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+    , panningSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , readposSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , velocitySlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
 
     , intervalRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , durationRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
-    , panRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+    , panningRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , readposRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     , velocityRandSlider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
 {
@@ -47,7 +47,7 @@ MainComponent::MainComponent()
     intervalSlider.onValueChange = [this] {
         puroEngine.intervalParam.centre = (float)intervalSlider.getValue();
         const float interval = puroEngine.intervalParam.get();
-        puroEngine.timer.interval = math::round(puroEngine.durationParam.centre / interval);
+        puroEngine.timer.interval = puro::math::round(puroEngine.durationParam.centre / interval);
     };
     intervalSlider.setValue(1.0);
 
@@ -58,12 +58,12 @@ MainComponent::MainComponent()
     };
     durationSlider.setValue(300);
 
-    addAndMakeVisible(panSlider);
-    panSlider.setRange(-1, 1);
-    panSlider.onValueChange = [this] {
-        puroEngine.panningParam.centre = (float)panSlider.getValue();
+    addAndMakeVisible(panningSlider);
+    panningSlider.setRange(-1, 1);
+    panningSlider.onValueChange = [this] {
+        puroEngine.panningParam.centre = (float)panningSlider.getValue();
     };
-    panSlider.setValue(0);
+    panningSlider.setValue(0);
 
     addAndMakeVisible(readposSlider);
     readposSlider.setRange(0, 1);
@@ -95,12 +95,12 @@ MainComponent::MainComponent()
     };
     durationRandSlider.setValue(0);
 
-    addAndMakeVisible(panRandSlider);
-    panRandSlider.setRange(0, 2);
-    panRandSlider.onValueChange = [this] {
-        puroEngine.panningParam.deviation = (float)panRandSlider.getValue();
+    addAndMakeVisible(panningRandSlider);
+    panningRandSlider.setRange(0, 2);
+    panningRandSlider.onValueChange = [this] {
+        puroEngine.panningParam.deviation = (float)panningRandSlider.getValue();
     };
-    panRandSlider.setValue(0);
+    panningRandSlider.setValue(0);
 
     addAndMakeVisible(readposRandSlider);
     readposRandSlider.setRange(0, 10);
@@ -116,7 +116,30 @@ MainComponent::MainComponent()
         puroEngine.velocityParam.deviation = (float)velocityRandSlider.getValue();
     };
     velocityRandSlider.setValue(0.0);
+    
+    ////////////////////
+    // Labels
+    ////////////////////
+    addAndMakeVisible(intervalLabel);
+    addAndMakeVisible(durationLabel);
+    addAndMakeVisible(panningLabel);
+    addAndMakeVisible(readposLabel);
+    addAndMakeVisible(velocityLabel);
+    addAndMakeVisible(randomLabel);
 
+    intervalLabel.setText("interval", juce::dontSendNotification);
+    durationLabel.setText("duration", juce::dontSendNotification);
+    panningLabel.setText("panning", juce::dontSendNotification);
+    readposLabel.setText("readpos", juce::dontSendNotification);
+    velocityLabel.setText("velocity", juce::dontSendNotification);
+    randomLabel.setText("random", juce::dontSendNotification);
+    
+    intervalLabel.setJustificationType(juce::Justification::centred);
+    durationLabel.setJustificationType(juce::Justification::centred);
+    panningLabel.setJustificationType(juce::Justification::centred);
+    readposLabel.setJustificationType(juce::Justification::centred);
+    velocityLabel.setJustificationType(juce::Justification::centred);
+    randomLabel.setJustificationType(juce::Justification::centred);
 }
 
 MainComponent::~MainComponent()
@@ -140,7 +163,7 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {
     bufferToFill.clearActiveBufferRegion();
-    puroEngine.processBlock<puro::DynamicBuffer<float>> (*bufferToFill.buffer);
+    puroEngine.processBlock (*bufferToFill.buffer);
 }
 
 void MainComponent::releaseResources()
@@ -157,18 +180,26 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::resized()
 {
     audioFileDialogButton.setBounds({10, 10, 200, 30});
+    
+    intervalLabel.setBounds(100, 50, 100, 30);
+    durationLabel.setBounds(200, 50, 100, 30);
+    panningLabel.setBounds(300, 50, 100, 30);
+    readposLabel.setBounds(400, 50, 100, 30);
+    velocityLabel.setBounds(500, 50, 100, 30);
 
-    intervalSlider.setBounds(10, 50, 100, 100);
-    durationSlider.setBounds(110, 50, 100, 100);
-    panSlider.setBounds(210, 50, 100, 100);
-    readposSlider.setBounds(310, 50, 100, 100);
-    velocitySlider.setBounds(410, 50, 100, 100);
+    intervalSlider.setBounds(100, 100, 100, 100);
+    durationSlider.setBounds(200, 100, 100, 100);
+    panningSlider.setBounds(300, 100, 100, 100);
+    readposSlider.setBounds(400, 100, 100, 100);
+    velocitySlider.setBounds(500, 100, 100, 100);
+    
+    randomLabel.setBounds(0, 230, 100, 30);
 
-    intervalRandSlider.setBounds(10, 150, 100, 100);
-    durationRandSlider.setBounds(110, 150, 100, 100);
-    panRandSlider.setBounds(210, 150, 100, 100);
-    readposRandSlider.setBounds(310, 150, 100, 100);
-    velocityRandSlider.setBounds(410, 150, 100, 100);
+    intervalRandSlider.setBounds(100, 200, 100, 100);
+    durationRandSlider.setBounds(200, 200, 100, 100);
+    panningRandSlider.setBounds(300, 200, 100, 100);
+    readposRandSlider.setBounds(400, 200, 100, 100);
+    velocityRandSlider.setBounds(500, 200, 100, 100);
 
     activeGrainsLabel.setBounds(10, getHeight()-40, 100, 30);
 }
@@ -200,13 +231,10 @@ void MainComponent::loadAudioFile(juce::File file)
         audioFileBuffer = juce::AudioSampleBuffer(reader->numChannels, (int)reader->lengthInSamples);
         reader->read(&audioFileBuffer, 0, (int)reader->lengthInSamples, 0, true, true);
     }
-
-
-    for (int ch=0; ch<audioFileBuffer.getNumChannels(); ++ch)
-        puroEngine.context.source.channelPtrs[ch] = audioFileBuffer.getWritePointer(ch);
-
-    puroEngine.context.source.numSamples = audioFileBuffer.getNumSamples();
-    puroEngine.context.source.numChannels = audioFileBuffer.getNumChannels();
+    
+    puroEngine.sourceBuffer = puro::dynamic_buffer<MAX_NUM_SRC_CHANNELS, float> (audioFileBuffer.getNumChannels()
+                                                                                 , audioFileBuffer.getNumSamples()
+                                                                                 , audioFileBuffer.getArrayOfWritePointers());
 
     readposSlider.setRange(0, audioFileBuffer.getNumSamples() / getSampleRate());
     puroEngine.readposParam.maximum = audioFileBuffer.getNumSamples();

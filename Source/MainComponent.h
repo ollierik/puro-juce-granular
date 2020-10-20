@@ -35,15 +35,22 @@ private:
 
     juce::Slider intervalSlider;
     juce::Slider durationSlider;
-    juce::Slider panSlider;
+    juce::Slider panningSlider;
     juce::Slider readposSlider;
     juce::Slider velocitySlider;
 
     juce::Slider intervalRandSlider;
     juce::Slider durationRandSlider;
-    juce::Slider panRandSlider;
+    juce::Slider panningRandSlider;
     juce::Slider readposRandSlider;
     juce::Slider velocityRandSlider;
+    
+    juce::Label intervalLabel;
+    juce::Label durationLabel;
+    juce::Label panningLabel;
+    juce::Label readposLabel;
+    juce::Label velocityLabel;
+    juce::Label randomLabel;
 
     juce::Label activeGrainsLabel;
 
