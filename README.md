@@ -7,3 +7,6 @@ Clone (and move) to a folder that also contains JUCE and puro on the same level,
     dir/puro-juce-granular
     dir/juce
     dir/puro
+
+Export the .jucer with Projucer.
+Made with JUCE 6.
